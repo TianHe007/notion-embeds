@@ -21,40 +21,40 @@
     }
   }
   *{box-sizing:border-box}
-  body{margin:0; padding:18px; background:transparent; color:var(--txt); font-family:var(--sans); line-height:1.6;}
+  body{margin:0; padding:12px 14px; background:transparent; color:var(--txt); font-family:var(--sans); line-height:1.45;}
   .wrap{max-width:680px; margin:0 auto;}
   .btn{padding:8px 16px; border:.5px solid var(--border2); border-radius:var(--radius); background:transparent; font-size:14px; cursor:pointer; color:var(--txt); font-family:inherit;}
   .btn:hover{background:var(--surface2);}
   .btn:active{transform:scale(.98);}
   .btn:disabled{opacity:.4; cursor:not-allowed;}
-  .chip{display:inline-flex; align-items:center; justify-content:center; min-width:30px; height:26px; padding:0 8px; border-radius:var(--radius); font-size:13px; font-family:var(--mono);}
+  .chip{display:inline-flex; align-items:center; justify-content:center; min-width:24px; height:22px; padding:0 6px; border-radius:var(--radius); font-size:12px; font-family:var(--mono);}
   .chip-kv{background:var(--kv-bg); color:var(--kv-txt);}
   .chip-q{background:var(--q-bg); color:var(--q-txt); text-decoration:line-through;}
-  .slot{display:flex; flex-direction:column; align-items:center; gap:5px; padding:8px 6px; border:.5px solid var(--border); border-radius:var(--radius); background:var(--surface); min-width:52px;}
+  .slot{display:flex; flex-direction:column; align-items:center; gap:4px; padding:6px 7px; border:.5px solid var(--border); border-radius:var(--radius); background:var(--surface); min-width:48px;}
   .slot-new{animation:pop .35s ease;}
   @media (prefers-reduced-motion:no-preference){@keyframes pop{from{opacity:0; transform:translateY(-8px) scale(.9)} to{opacity:1; transform:none}}}
-  .row{display:flex; align-items:center; gap:12px; margin:0 0 1.1rem; flex-wrap:wrap;}
-  .panel{min-height:78px; padding:12px 14px; border:.5px solid var(--border); border-radius:var(--radius-lg); margin:0 0 1.1rem;}
-  .cache{display:flex; flex-wrap:wrap; gap:8px; min-height:60px; padding:12px; border:.5px dashed var(--border2); border-radius:var(--radius-lg); margin:0 0 1.6rem;}
-  .hint{font-size:13px; color:var(--txt2); margin:0 0 8px;}
+  .row{display:flex; align-items:center; gap:10px; margin:0 0 .6rem; flex-wrap:wrap;}
+  .panel{min-height:auto; padding:9px 12px; border:.5px solid var(--border); border-radius:var(--radius-lg); margin:0 0 .7rem;}
+  .cache{display:flex; flex-wrap:wrap; gap:7px; min-height:42px; padding:9px; border:.5px dashed var(--border2); border-radius:var(--radius-lg); margin:0 0 .9rem;}
+  .hint{font-size:13px; color:var(--txt2); margin:0 0 6px;}
 
-  .calc{border:.5px solid var(--border); border-radius:var(--radius-lg); padding:16px;}
-  .calc h3{font-size:15px; font-weight:500; margin:0 0 4px;}
-  .dims{display:grid; grid-template-columns:repeat(auto-fit,minmax(108px,1fr)); gap:10px; margin:12px 0 14px;}
-  .dim{display:flex; flex-direction:column; gap:4px;}
+  .calc{border:.5px solid var(--border); border-radius:var(--radius-lg); padding:12px 14px;}
+  .calc h3{font-size:15px; font-weight:500; margin:0 0 2px;}
+  .dims{display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:8px; margin:9px 0 10px;}
+  .dim{display:flex; flex-direction:column; gap:3px;}
   .dim label{font-size:12px; color:var(--txt2);}
-  .dim input, .dim select{font-family:var(--mono); font-size:14px; padding:6px 8px; border:.5px solid var(--border2); border-radius:var(--radius); background:var(--surface); color:var(--txt); width:100%;}
-  .Lbox{background:var(--surface2); border-radius:var(--radius); padding:8px 12px; font-size:13px; color:var(--txt2); margin-bottom:14px;}
+  .dim input, .dim select{font-family:var(--mono); font-size:14px; padding:5px 8px; border:.5px solid var(--border2); border-radius:var(--radius); background:var(--surface); color:var(--txt); width:100%;}
+  .Lbox{background:var(--surface2); border-radius:var(--radius); padding:6px 10px; font-size:13px; color:var(--txt2); margin-bottom:9px;}
   .Lbox b{color:var(--accent); font-family:var(--mono); font-size:15px;}
-  .fsym{font-family:var(--mono); font-size:13px; color:var(--txt2); margin-bottom:6px;}
-  .fsub{font-family:var(--mono); font-size:14px; line-height:2; word-break:break-word;}
+  .fsym{font-family:var(--mono); font-size:13px; color:var(--txt2); margin-bottom:3px;}
+  .fsub{font-family:var(--mono); font-size:14px; line-height:1.7; word-break:break-word;}
   .fsub .val, .fshape .val{color:var(--accent); font-weight:500;}
   .fsub .L, .fshape .L{background:var(--kv-bg); color:var(--kv-txt); padding:1px 5px; border-radius:5px;}
-  .fshape{font-family:var(--mono); font-size:14px; margin-bottom:12px; word-break:break-word;}
+  .fshape{font-family:var(--mono); font-size:13.5px; margin-bottom:7px; word-break:break-word;}
   .fshape .lab{color:var(--txt2); font-family:var(--sans); font-size:13px;}
-  .result{font-size:30px; font-weight:500; margin-top:12px;}
+  .result{font-size:26px; font-weight:500; margin-top:8px;}
   .result small{font-size:14px; color:var(--txt2); font-weight:400;}
-  .proj{font-size:13px; color:var(--txt2); margin-top:8px;}
+  .proj{font-size:13px; color:var(--txt2); margin-top:6px;}
   .proj b{color:var(--accent); font-family:var(--mono);}
 </style>
 </head>
@@ -74,7 +74,7 @@
 
   <div class="calc">
     <h3>KV cache 实时计算</h3>
-    <p style="font-size:13px; color:var(--txt2); margin:0;">维度有默认值，可自行修改。每生成一个 token，L 自动 +1，公式与结果实时变化。</p>
+    <p style="font-size:12.5px; color:var(--txt2); margin:0;">维度可改；每生成一个 token，L 自动 +1，公式与结果实时变化。</p>
 
     <div class="dims">
       <div class="dim"><label>B（batch）</label><input type="number" id="d_B" value="1" min="1" step="1"></div>
@@ -161,7 +161,7 @@
       const s = document.createElement("div");
       s.className = "slot" + (justAdded && i===n-1 ? " slot-new" : "");
       s.innerHTML = '<span style="font-size:13px; color:var(--txt2)">'+tokens[i]+'</span>'+
-        '<span class="chip chip-kv">K</span><span class="chip chip-kv">V</span>';
+        '<span style="display:flex; gap:4px;"><span class="chip chip-kv">K</span><span class="chip chip-kv">V</span></span>';
       cache.appendChild(s);
     }
     if(n===0){
