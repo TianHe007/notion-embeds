@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KV cache 交互演示</title>
+<style>
+  :root{
+    --bg:transparent; --txt:#1f1e1c; --txt2:#6b6a64; --txt3:#9a988f;
+    --surface:#ffffff; --surface2:#f4f2ec; --border:rgba(0,0,0,.12); --border2:rgba(0,0,0,.22);
+    --kv-bg:#E6F1FB; --kv-txt:#0C447C; --q-bg:#f1efe8; --q-txt:#9a988f;
+    --radius:8px; --radius-lg:12px;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --txt:#e8e6dd; --txt2:#b4b2a9; --txt3:#888780;
+      --surface:#26251f; --surface2:#2c2c2a; --border:rgba(255,255,255,.14); --border2:rgba(255,255,255,.26);
+      --kv-bg:#0C447C; --kv-txt:#B5D4F4; --q-bg:#2c2c2a; --q-txt:#888780;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0; padding:18px; background:var(--bg); color:var(--txt); font-family:var(--sans); line-height:1.6;}
+  .wrap{max-width:680px; margin:0 auto;}
+  .btn{padding:8px 16px; border:.5px solid var(--border2); border-radius:var(--radius); background:transparent; font-size:14px; cursor:pointer; color:var(--txt); font-family:inherit;}
+  .btn:hover{background:var(--surface2);}
+  .btn:active{transform:scale(.98);}
+  .btn:disabled{opacity:.4; cursor:not-allowed;}
+  .chip{display:inline-flex; align-items:center; justify-content:center; min-width:30px; height:26px; padding:0 8px; border-radius:var(--radius); font-size:13px; font-family:var(--mono);}
+  .chip-kv{background:var(--kv-bg); color:var(--kv-txt);}
+  .chip-q{background:var(--q-bg); color:var(--q-txt); text-decoration:line-through;}
+  .slot{display:flex; flex-direction:column; align-items:center; gap:5px; padding:8px 6px; border:.5px solid var(--border); border-radius:var(--radius); background:var(--surface); min-width:52px;}
+  .slot-new{animation:pop .35s ease;}
+  @media (prefers-reduced-motion:no-preference){@keyframes pop{from{opacity:0; transform:translateY(-8px) scale(.9)} to{opacity:1; transform:none}}}
+  .metric{background:var(--surface2); border-radius:var(--radius); padding:10px 12px;}
+  .metric .v{font-size:22px; font-weight:500;}
+  .metric .l{font-size:12px; color:var(--txt2);}
+  .row{display:flex; align-items:center; gap:12px; margin:0 0 1.1rem; flex-wrap:wrap;}
+  .panel{min-height:78px; padding:12px 14px; border:.5px solid var(--border); border-radius:var(--radius-lg); margin:0 0 1.1rem;}
+  .cache{display:flex; flex-wrap:wrap; gap:8px; min-height:60px; padding:12px; border:.5px dashed var(--border2); border-radius:var(--radius-lg); margin:0 0 1.1rem;}
+  .grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px;}
+  .hint{font-size:13px; color:var(--txt2); margin:0 0 8px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="row">
+    <button class="btn" id="gen">生成下一个 token</button>
+    <button class="btn" id="rst" style="font-size:13px;">重置</button>
+    <span id="stepinfo" style="font-size:13px; color:var(--txt2);"></span>
+  </div>
+
+  <div class="panel" id="curstep"></div>
+
+  <p class="hint">KV cache（持续保存，逐步变长）：</p>
+  <div class="cache" id="cache"></div>
+
+  <div class="grid">
+    <div class="metric"><div class="v" id="m1">0</div><div class="l">缓存中的 token 数</div></div>
+    <div class="metric"><div class="v" id="m2">0</div><div class="l">缓存的 K/V 向量数</div></div>
+    <div class="metric"><div class="v" id="m3">0</div><div class="l">已丢弃的 Q 向量数</div></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const tokens = ["The","cat","sat","on","the","mat"];
+  let n = 0;
+  const cache = document.getElementById('cache');
+  const cur = document.getElementById('curstep');
+  const gen = document.getElementById('gen');
+  const stepinfo = document.getElementById('stepinfo');
+
+  function render(justAdded){
+    cache.innerHTML = '';
+    for(let i=0;i<n;i++){
+      const s = document.createElement('div');
+      s.className = 'slot' + (justAdded && i===n-1 ? ' slot-new' : '');
+      s.innerHTML = '<span style="font-size:13px; color:var(--txt2)">'+tokens[i]+'</span>'+
+        '<span class="chip chip-kv">K</span><span class="chip chip-kv">V</span>';
+      cache.appendChild(s);
+    }
+    if(n===0){
+      cur.innerHTML = '<span style="font-size:14px; color:var(--txt3)">点击「生成下一个 token」开始 —— 看缓存怎么长大。</span>';
+    } else {
+      cur.innerHTML =
+        '<div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">'+
+        '<span style="font-size:14px;">当前 token <b style="font-family:var(--mono)">'+tokens[n-1]+'</b> 算出三个向量：</span>'+
+        '<span style="display:flex; align-items:center; gap:6px;"><span class="chip chip-q">Q</span><span style="font-size:13px; color:var(--txt3)">用完即丢弃</span></span>'+
+        '<span style="display:flex; align-items:center; gap:6px;"><span class="chip chip-kv">K</span><span class="chip chip-kv">V</span><span style="font-size:13px; color:var(--kv-txt)">→ 存入缓存</span></span>'+
+        '</div>';
+    }
+    document.getElementById('m1').textContent = n;
+    document.getElementById('m2').textContent = n*2;
+    document.getElementById('m3').textContent = n;
+    gen.disabled = n>=tokens.length;
+    stepinfo.textContent = n>=tokens.length ? '序列已生成完' : '';
+  }
+
+  gen.addEventListener('click', function(){ if(n<tokens.length){ n++; render(true);} });
+  document.getElementById('rst').addEventListener('click', function(){ n=0; render(false); });
+  render(false);
+})();
+</script>
+</body>
+</html>
